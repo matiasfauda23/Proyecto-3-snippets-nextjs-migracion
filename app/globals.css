@@ -1,49 +1,248 @@
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-html {
-  height: 100%;
-}
-
-html,
 body {
-  max-width: 100vw;
-  overflow-x: hidden;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f4f6f8;
+  color: #17202a;
 }
 
-body {
-  min-height: 100%;
+main {
+  width: min(100% - 24px, 960px);
+  margin: 0 auto;
+  padding: 24px 0;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin-top: 0;
+}
+
+.snippet-form {
+  display: grid;
+  gap: 16px;
+  padding: 20px;
+  margin: 24px 0;
+  background-color: #ffffff;
+  border: 1px solid #d8dee4;
+  border-radius: 8px;
+}
+
+.form-field {
+  display: grid;
+  gap: 6px;
+}
+
+.form-field span {
+  font-weight: 600;
+}
+
+input,
+textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border: 1px solid #c8d0d8;
+  border-radius: 6px;
+  font: inherit;
+}
+
+textarea {
+  min-height: 96px;
+  resize: vertical;
+}
+
+button {
+  width: 100%;
+  padding: 10px 14px;
+  border: 0;
+  border-radius: 6px;
+  background-color: #2563eb;
+  color: #ffffff;
+  font: inherit;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #1d4ed8;
+}
+
+.snippets-list {
+  display: grid;
+  gap: 16px;
+  padding: 0;
+  list-style: none;
+}
+
+.snippet-card {
+  padding: 18px;
+  background-color: #ffffff;
+  border: 1px solid #d8dee4;
+  border-radius: 8px;
+}
+
+.snippet-card-header {
+  display: grid;
+  gap: 8px;
+}
+
+.snippet-card h3 {
+  margin-bottom: 8px;
+}
+
+.snippet-code-block {
+  background-color: #111827;
+  border-radius: 6px;
+}
+
+.snippet-code-block code {
+  font-family: "Fira Code", "Consolas", monospace;
+  font-size: 0.95rem;
+  white-space: pre;
+  color: #f9fafb;
+}
+
+.form-error {
+  margin: 0;
+  padding: 10px 12px;
+  background-color: #fee2e2;
+  border: 1px solid #fca5a5;
+  border-radius: 6px;
+  color: #991b1b;
+  font-weight: 600;
+}
+
+.snippet-actions {
+  display: grid;
+  gap: 12px;
+}
+
+.snippet-filters {
   display: flex;
   flex-direction: column;
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  align-items: stretch;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding: 12px;
+  background-color: #f5f5f5;
+  border-radius: 8px;
 }
 
-* {
+.snippet-filters select {
+  width: 100%;
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.snippet-filters label {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.snippet-filters input[type="checkbox"] {
+  width: auto;
+}
+
+.snippet-filters button {
+  padding: 6px 12px;
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.snippet-filters button:hover {
+  background-color: #d0d0d0;
+}
+
+/* ── D4: SearchBar ─────────────────────────────────────── */
+
+.search-bar {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.search-bar__label {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.search-bar__input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-bar__input {
+  width: 100%;
   box-sizing: border-box;
-  padding: 0;
-  margin: 0;
+  padding: 10px 40px 10px 12px;
+  border: 1px solid #c8d0d8;
+  border-radius: 6px;
+  font: inherit;
+  font-size: 14px;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+.search-bar__input:focus {
+  outline: 2px solid #2563eb;
+  outline-offset: 1px;
+  border-color: #2563eb;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
+.search-bar__clear {
+  position: absolute;
+  right: 10px;
+  width: auto;
+  padding: 2px 6px;
+  background: none;
+  color: #6b7280;
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.search-bar__clear:hover {
+  background: none;
+  color: #111827;
+}
+
+/* Responsive */
+
+@media (min-width: 768px) {
+  main {
+    width: min(100% - 32px, 960px);
+    padding: 32px 0;
+  }
+
+  button {
+    width: fit-content;
+  }
+
+  .snippet-card-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    align-items: start;
+  }
+
+  .snippet-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .snippet-filters {
+    flex-direction: row;
+    align-items: center;
   }
 }
