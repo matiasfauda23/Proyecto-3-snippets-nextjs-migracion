@@ -6,10 +6,10 @@ import type { Snippet } from "../store/types";
 
 type SnippetFormProps = {
   snippetToEdit?: Snippet;
-  onFinishEditing?: () => void;
+  onFinishEditingAction?: () => void;
 };
 
-export function SnippetForm({ snippetToEdit, onFinishEditing }: SnippetFormProps) {
+export function SnippetForm({ snippetToEdit, onFinishEditingAction }: SnippetFormProps) {
   const addSnippet = useSnippetsStore((state) => state.addSnippet);
   const updateSnippet = useSnippetsStore((state) => state.updateSnippet);
 
@@ -45,7 +45,7 @@ export function SnippetForm({ snippetToEdit, onFinishEditing }: SnippetFormProps
         code,
         tags: parsedTags,
       });
-      onFinishEditing?.();
+      onFinishEditingAction?.();
       return;
     }
 
