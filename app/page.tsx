@@ -1,5 +1,5 @@
-import { SnippetForm } from "@/components/SnippetForm";
-import { SnippetList } from "@/components/SnippetList";
+import { SnippetForm } from "@/features/snippets/components/SnippetForm";
+import { SnippetList } from "@/features/snippets/components/SnippetList";
 
 export default function SnippetsPage() {
   return (
