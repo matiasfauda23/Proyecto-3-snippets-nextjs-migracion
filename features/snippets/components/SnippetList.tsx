@@ -108,6 +108,7 @@ export function SnippetList() {
                     <>
                       <h3>Editando: {snippet.title}</h3>
                       <SnippetForm
+                        key={snippet.id}
                         snippetToEdit={snippet}
                         onFinishEditingAction={() => setEditingSnippetId(null)}
                       />
