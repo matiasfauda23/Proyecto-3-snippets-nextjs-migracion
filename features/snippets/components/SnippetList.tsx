@@ -54,7 +54,7 @@ export function SnippetList() {
     setCopiedSnippetId(snippet.id);
 
     timeoutRef.current = setTimeout(() => {
-      setCopiedSnippetId(null);
+      setCopiedSnippetId((currentId) => (currentId === snippet.id ? null : currentId));
     }, COPY_FEEDBACK_DURATION_MS);
   }
 
