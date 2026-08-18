@@ -1,120 +1,141 @@
 "use client";
 
-import { useState, type ChangeEvent, type SubmitEvent } from "react";
+import { useState, type SubmitEvent } from "react";
 import { useSnippetsStore } from "../store/store";
-import type { Snippet } from "../store/types";
+import type { Snippet, SnippetFormData } from "../store/types";
+import {
+  createSnippetFromForm,
+  updateSnippetFromForm,
+  validateSnippetForm,
+} from "../utils";
 
 type SnippetFormProps = {
   snippetToEdit?: Snippet;
   onFinishEditingAction?: () => void;
 };
 
-export function SnippetForm({ snippetToEdit, onFinishEditingAction }: SnippetFormProps) {
+const initialFormData: SnippetFormData = {
+  title: "",
+  description: "",
+  language: "",
+  code: "",
+  tags: "",
+};
+
+function getInitialFormData(snippet?: Snippet): SnippetFormData {
+  if (!snippet) {
+    return initialFormData;
+  }
+
+  return {
+    title: snippet.title,
+    description: snippet.description,
+    language: snippet.language,
+    code: snippet.code,
+    tags: snippet.tags.join(", "),
+  };
+}
+
+export function SnippetForm({
+  snippetToEdit,
+  onFinishEditingAction,
+}: SnippetFormProps) {
   const addSnippet = useSnippetsStore((state) => state.addSnippet);
   const updateSnippet = useSnippetsStore((state) => state.updateSnippet);
 
-  const [title, setTitle] = useState(snippetToEdit?.title ?? "");
-  const [description, setDescription] = useState(snippetToEdit?.description ?? "");
-  const [language, setLanguage] = useState(snippetToEdit?.language ?? "");
-  const [code, setCode] = useState(snippetToEdit?.code ?? "");
-  const [tags, setTags] = useState(snippetToEdit?.tags.join(", ") ?? "");
+  const [formData, setFormData] = useState<SnippetFormData>(
+    getInitialFormData(snippetToEdit),
+  );
+  const [error, setError] = useState<string | null>(null);
 
   const isEditing = snippetToEdit !== undefined;
 
-  function resetForm() {
-    setTitle("");
-    setDescription("");
-    setLanguage("");
-    setCode("");
-    setTags("");
+  function updateField(field: keyof SnippetFormData, value: string) {
+    setFormData((previous) => ({ ...previous, [field]: value }));
   }
 
   function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    const parsedTags = tags
-      .split(",")
-      .map((tag) => tag.trim())
-      .filter(Boolean);
+    const validationError = validateSnippetForm(formData);
 
-    if (isEditing) {
-      updateSnippet(snippetToEdit.id, {
-        title,
-        description,
-        language,
-        code,
-        tags: parsedTags,
-      });
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
+
+    setError(null);
+
+    if (snippetToEdit) {
+      updateSnippet(
+        snippetToEdit.id,
+        updateSnippetFromForm(snippetToEdit, formData),
+      );
       onFinishEditingAction?.();
       return;
     }
 
-    const now = new Date().toISOString();
-
-    addSnippet({
-      id: crypto.randomUUID(),
-      title,
-      description,
-      language,
-      code,
-      tags: parsedTags,
-      favorite: false,
-      createdAt: now,
-      updatedAt: now,
-    });
-
-    resetForm();
-  }
-
-  function handleTitleChange(event: ChangeEvent<HTMLInputElement>) {
-    setTitle(event.target.value);
-  }
-
-  function handleDescriptionChange(event: ChangeEvent<HTMLInputElement>) {
-    setDescription(event.target.value);
-  }
-
-  function handleLanguageChange(event: ChangeEvent<HTMLInputElement>) {
-    setLanguage(event.target.value);
-  }
-
-  function handleCodeChange(event: ChangeEvent<HTMLTextAreaElement>) {
-    setCode(event.target.value);
-  }
-
-  function handleTagsChange(event: ChangeEvent<HTMLInputElement>) {
-    setTags(event.target.value);
+    addSnippet(createSnippetFromForm(formData));
+    setFormData(initialFormData);
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        value={title}
-        onChange={handleTitleChange}
-        placeholder="Título"
-      />
-      <input
-        value={description}
-        onChange={handleDescriptionChange}
-        placeholder="Descripción"
-      />
-      <input
-        value={language}
-        onChange={handleLanguageChange}
-        placeholder="Lenguaje (ej: ts, js, python)"
-      />
-      <textarea
-        value={code}
-        onChange={handleCodeChange}
-        placeholder="Código"
-      />
-      <input
-        value={tags}
-        onChange={handleTagsChange}
-        placeholder="Etiquetas (separadas por coma)"
-      />
+    <form className="snippet-form" onSubmit={handleSubmit}>
+      <label className="form-field">
+        <span>Título</span>
+        <input
+          type="text"
+          required
+          placeholder="Ej: Hook para manejar formularios"
+          value={formData.title}
+          onChange={(event) => updateField("title", event.target.value)}
+        />
+      </label>
+
+      <label className="form-field">
+        <span>Lenguaje</span>
+        <input
+          type="text"
+          required
+          placeholder="Ej: TypeScript"
+          value={formData.language}
+          onChange={(event) => updateField("language", event.target.value)}
+        />
+      </label>
+
+      <label className="form-field">
+        <span>Descripción</span>
+        <textarea
+          placeholder="Explicá brevemente para qué sirve este snippet"
+          value={formData.description}
+          onChange={(event) => updateField("description", event.target.value)}
+        />
+      </label>
+
+      <label className="form-field">
+        <span>Código</span>
+        <textarea
+          required
+          placeholder="Pegá acá el código del snippet"
+          value={formData.code}
+          onChange={(event) => updateField("code", event.target.value)}
+        />
+      </label>
+
+      <label className="form-field">
+        <span>Etiquetas separadas por coma</span>
+        <input
+          type="text"
+          placeholder="Ej: react, hooks, formularios"
+          value={formData.tags}
+          onChange={(event) => updateField("tags", event.target.value)}
+        />
+      </label>
+
+      {error && <p className="form-error">{error}</p>}
+
       <button type="submit">
-        {isEditing ? "Guardar cambios" : "Guardar"}
+        {isEditing ? "Guardar cambios" : "Guardar snippet"}
       </button>
     </form>
   );

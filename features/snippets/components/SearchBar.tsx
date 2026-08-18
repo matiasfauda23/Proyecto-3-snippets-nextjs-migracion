@@ -13,12 +13,30 @@ export function SearchBar({ query, onQueryChange }: SearchBarProps) {
   }
 
   return (
-    <input
-      type="search"
-      value={query}
-      onChange={handleChange}
-      placeholder="Buscar snippets…"
-      aria-label="Buscar snippets"
-    />
+    <div className="search-bar">
+      <label htmlFor="snippet-search" className="search-bar__label">
+        Buscar snippets
+      </label>
+      <div className="search-bar__input-wrapper">
+        <input
+          id="snippet-search"
+          type="search"
+          className="search-bar__input"
+          placeholder="Buscar por título, descripción, código o etiqueta..."
+          value={query}
+          onChange={handleChange}
+        />
+        {query && (
+          <button
+            type="button"
+            className="search-bar__clear"
+            onClick={() => onQueryChange("")}
+            aria-label="Limpiar búsqueda"
+          >
+            ✕
+          </button>
+        )}
+      </div>
+    </div>
   );
 }
