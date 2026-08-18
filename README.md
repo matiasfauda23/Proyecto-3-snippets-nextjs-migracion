@@ -132,9 +132,9 @@ falla, el código se muestra como texto plano escapado — el
 
 ## Bugs encontrados y corregidos
 
-Trece bugs documentados en [`BUGFIXES.md`](./BUGFIXES.md): siete preexistentes
-del proyecto original y seis introducidos por la propia migración. Cada uno
-indica qué pasaba, por qué pasaba, cómo se solucionó y en qué commit.
+Trece hallazgos documentados en [`BUGFIXES.md`](./BUGFIXES.md): siete
+preexistentes del proyecto original y seis introducidos por la propia migración.
+Cada uno indica qué pasaba, por qué pasaba, cómo se solucionó y en qué commit.
 
 ## Funcionalidad extra
 
