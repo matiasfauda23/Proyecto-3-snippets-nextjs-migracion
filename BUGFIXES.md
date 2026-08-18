@@ -1,9 +1,12 @@
 # Registro de bugs
 
-Bugs detectados durante la lectura del proyecto original y durante la migración
-a Next.js, con su causa y su corrección. Se separan en **preexistentes** (ya
-estaban en el proyecto React + Vite) y **de migración** (los introdujo el propio
-proceso de portar el código).
+Hallazgos detectados durante la lectura del proyecto original y durante la
+migración a Next.js, con su causa y su corrección. Se separan en
+**preexistentes** (ya estaban en el proyecto React + Vite) y **de migración**
+(los introdujo el propio proceso de portar el código).
+
+Todos son bugs reproducibles salvo el número 2, que se dejó documentado como
+fragilidad latente porque el arreglo se hizo igual.
 
 ---
 
@@ -11,25 +14,36 @@ proceso de portar el código).
 
 ### 1. El feedback de "¡Copiado!" se cortaba antes de tiempo
 
-- **Qué pasaba:** al copiar dos snippets distintos con menos de dos segundos de
-  diferencia, el cartel de "¡Copiado!" del segundo desaparecía casi enseguida.
-- **Por qué pasaba:** `handleCopy` limpiaba el timeout anterior *antes* de
-  `await copyToClipboard(...)`. Con dos clics rápidos, ambas llamadas pasaban ese
-  guard con el ref todavía vacío, así que el `setTimeout` del primer clic quedaba
-  vivo y al dispararse borraba el estado del segundo.
+- **Qué pasaba:** al copiar dos snippets distintos con clics muy seguidos, el
+  cartel de "¡Copiado!" del segundo desaparecía antes de cumplir sus dos
+  segundos.
+- **Por qué pasaba:** `handleCopy` limpia el timeout anterior *antes* de
+  `await copyToClipboard(...)`. Si el segundo clic entra mientras la primera
+  escritura al portapapeles sigue pendiente, los dos pasan ese guard con el ref
+  todavía vacío; después cada uno agenda su propio `setTimeout`, y el del primer
+  clic sobrevive y al dispararse borra el estado del segundo. La ventana es
+  angosta —hay que hacer los dos clics antes de que resuelva la primera
+  escritura— pero es alcanzable con un doble clic sobre dos tarjetas.
 - **Cómo se solucionó:** el callback del timeout ahora compara el id antes de
   limpiar el estado, en lugar de borrarlo a ciegas.
+- **Verificación:** disparando los dos clics en el mismo tick, solo la segunda
+  tarjeta queda en "¡Copiado!" y mantiene el cartel sus dos segundos completos.
 - **Commit:** `a0b786a`
 
-### 2. El formulario de edición no se recargaba al cambiar de snippet
+### 2. El formulario de edición dependía del orden del árbol para recargarse
 
-- **Qué pasaba:** si se abría la edición de un snippet y, sin cerrarla, se pasaba
-  a editar otro, el formulario seguía mostrando los datos del primero.
-- **Por qué pasaba:** el estado local se inicializa con
-  `useState(getInitialFormData(snippetToEdit))`, y React solo usa ese valor en el
-  primer render. Cambiar la prop no vuelve a inicializar el estado.
-- **Cómo se solucionó:** se le pasa `key={snippet.id}` al `SnippetForm` desde
-  `SnippetList`, para que React desmonte y vuelva a montar el componente.
+- **Qué pasaba:** nada visible. Se revisó porque `SnippetForm` inicializa su
+  estado con `useState(getInitialFormData(snippetToEdit))`, y React solo usa ese
+  valor en el primer render: si el componente se reutilizara con otra prop, el
+  formulario seguiría mostrando los datos del snippet anterior.
+- **Por qué no se manifestaba:** cada tarjeta renderiza su propio formulario
+  dentro de un `<li>` con su `key`, así que al cambiar de snippet a editar React
+  desmonta un formulario y monta otro. Se comprobó en el navegador: al pasar de
+  editar un snippet a otro, los cinco campos se recargan correctamente.
+- **Cómo se endureció:** se le pasa igual `key={snippet.id}` al `SnippetForm`,
+  para que la reinicialización no dependa de dónde esté montado el componente.
+  Si en algún momento el formulario de edición se saca del listado, el bug
+  latente no aparece.
 - **Commit:** `b6eab65`
 
 ### 3. Los selects de filtros tenían un orden impredecible
