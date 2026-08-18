@@ -7,10 +7,17 @@ import { useSnippetsStore } from "../store/store";
 import type { Snippet } from "../store/types";
 import { copyToClipboard } from "../utils";
 import { SearchBar } from "./SearchBar";
-import { SnippetCodeDisplay } from "./SnippetCodeDisplay";
+import dynamic from "next/dynamic";
 import { SnippetFilters } from "./SnippetFilters";
 import { SnippetForm } from "./SnippetForm";
 
+const SnippetCodeDisplay = dynamic(
+  () => import("./SnippetCodeDisplay").then((mod) => mod.SnippetCodeDisplay),
+  {
+    loading: () => <pre className="snippet-code-block">Cargando código…</pre>,
+    ssr: false,
+  },
+);
 const COPY_FEEDBACK_DURATION_MS = 2000;
 
 export function SnippetList() {
@@ -54,7 +61,7 @@ export function SnippetList() {
     setCopiedSnippetId(snippet.id);
 
     timeoutRef.current = setTimeout(() => {
-      setCopiedSnippetId(null);
+      setCopiedSnippetId((currentId) => (currentId === snippet.id ? null : currentId));
     }, COPY_FEEDBACK_DURATION_MS);
   }
 
@@ -108,6 +115,7 @@ export function SnippetList() {
                     <>
                       <h3>Editando: {snippet.title}</h3>
                       <SnippetForm
+                        key={snippet.id}
                         snippetToEdit={snippet}
                         onFinishEditingAction={() => setEditingSnippetId(null)}
                       />

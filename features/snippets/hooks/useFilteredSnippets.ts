@@ -21,12 +21,16 @@ export function useFilteredSnippets() {
   const filters: Filters = { query, language, tag, onlyFavorites };
 
   const availableLanguages = useMemo(
-    () => [...new Set(snippets.map((snippet) => snippet.language))],
+    () => [...new Set(snippets.map((snippet) => snippet.language))].sort((a, b) =>
+      a.localeCompare(b, "es"),
+    ),
     [snippets],
   );
 
   const availableTags = useMemo(
-    () => [...new Set(snippets.flatMap((snippet) => snippet.tags))],
+    () => [...new Set(snippets.flatMap((snippet) => snippet.tags))].sort((a, b) =>
+      a.localeCompare(b, "es"),
+    ),
     [snippets],
   );
 
