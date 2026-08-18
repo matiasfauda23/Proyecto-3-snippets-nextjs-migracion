@@ -17,3 +17,11 @@ export type SnippetFormData = {
   code: string;
   tags: string;
 };
+
+// como se describe el estado de los filtros del listado
+export type FilterState = {
+  query: string;
+  language: string;
+  tag: string;
+  onlyFavorites: boolean;
+};
