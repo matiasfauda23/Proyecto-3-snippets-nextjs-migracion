@@ -2,13 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useSnippetsStore } from "../store/store";
-
-export type Filters = {
-  query: string;
-  language: string;
-  tag: string;
-  onlyFavorites: boolean;
-};
+import type { FilterState } from "../store/types";
 
 export function useFilteredSnippets() {
   const snippets = useSnippetsStore((state) => state.snippets);
@@ -18,7 +12,7 @@ export function useFilteredSnippets() {
   const [tag, setTag] = useState("");
   const [onlyFavorites, setOnlyFavorites] = useState(false);
 
-  const filters: Filters = { query, language, tag, onlyFavorites };
+  const filters: FilterState = { query, language, tag, onlyFavorites };
 
   const availableLanguages = useMemo(
     () =>

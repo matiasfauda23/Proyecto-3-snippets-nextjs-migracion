@@ -1,10 +1,10 @@
 "use client";
 
 import type { ChangeEvent } from "react";
-import type { Filters } from "../hooks/useFilteredSnippets";
+import type { FilterState } from "../store/types";
 
 type SnippetFiltersProps = {
-  filters: Filters;
+  filters: FilterState;
   availableLanguages: string[];
   availableTags: string[];
   onLanguageChange: (language: string) => void;
