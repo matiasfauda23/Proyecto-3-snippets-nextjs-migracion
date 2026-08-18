@@ -96,7 +96,7 @@ button:hover {
 }
 
 .snippet-code-block code {
-  font-family: "Fira Code", "Consolas", monospace;
+  font-family: var(--font-fira-code), "Consolas", monospace;
   font-size: 0.95rem;
   white-space: pre;
   color: #f9fafb;

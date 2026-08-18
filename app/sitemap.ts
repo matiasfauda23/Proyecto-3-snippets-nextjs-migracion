@@ -1,11 +1,10 @@
 import type { MetadataRoute } from "next";
-
-const BASE_URL = "https://snippets-library-eight.vercel.app/";
+import { SITE_URL } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
     {
-      url: BASE_URL,
+      url: SITE_URL.href,
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 1,
