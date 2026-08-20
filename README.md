@@ -13,8 +13,6 @@ TypeScript** del proyecto de otro grupo, hecha como Tercer Proyecto Integrador.
 - Matías Fauda
 - Ángeles Álvarez Lucero
 
-> Completar con los integrantes restantes del grupo.
-
 ## Proyecto original
 
 - **Repositorio:** https://github.com/julietaR29/snippets-library
@@ -144,4 +142,4 @@ corrección de bugs y los requisitos de SEO, optimización y accesibilidad.
 ## Links
 
 - **Repositorio:** https://github.com/matiasfauda23/Proyecto-3-snippets-nextjs-migracion
-- **Deploy:** _pendiente_
+- **Deploy:** https://proyecto-3-snippets-nextjs-migracio.vercel.app
